@@ -1,6 +1,6 @@
 # Patched version of agnoster.
-# Repository is only marked as "dirty" if there are modified, tracked files.
-# Un-tracked files don't contribute to "dirtiness".
+# Show repository name, but don't show its dirtiness.
+# TODO: Show # dirty files, untracked files
 # - Ved
 
 # vim:ft=zsh ts=2 sw=2 sts=2
@@ -101,13 +101,15 @@ prompt_git() {
   }
   ref="$vcs_info_msg_0_"
   if [[ -n "$ref" ]]; then
-    if is_dirty; then
-      color=yellow
-      ref="${ref} $PLUSMINUS"
-    else
-      color=green
-      ref="${ref} "
-    fi
+    color=yellow
+    ref="${ref} "
+    # if is_dirty; then
+    #   color=yellow
+    #   ref="${ref} $PLUSMINUS"
+    # else
+    #   color=green
+    #   ref="${ref} "
+    # fi
     if [[ "${ref/.../}" == "$ref" ]]; then
       ref="$BRANCH $ref"
     else
