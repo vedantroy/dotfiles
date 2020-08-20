@@ -44,3 +44,10 @@ source /usr/share/fzf/completion.zsh
 # https://stackoverflow.com/questions/28491458
 # TODO: Make this a templated-value that is patched by the bootstrap script
 DEFAULT_USER="vedantroy"
+
+# fasd integration
+# https://github.com/clvv/fasd
+eval "$(fasd --init auto)"
+
+# Edit whatever file fasd finds with vim
+alias v='fasd -e vim -f'
