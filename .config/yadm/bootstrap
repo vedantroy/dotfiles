@@ -4,9 +4,12 @@ import sys
 from urllib import request
 from tempfile import NamedTemporaryFile
 import os
+import shutil
 
 if sys.version_info[0] < 3:
     sys.exit("Must use Python 3")
+if os.geteuid() == 0:
+    sys.exit("This script should not be run as superuser. It will request sudo privileges when necessary.")
 
 def run(cmd):
   print(f'Executing "{cmd}"')
@@ -69,14 +72,27 @@ def clone_zsh_repo(repo_path, host='github.com'):
 # Use environment variables b/c "yadm bootstrap" swallows
 # CLI args: https://github.com/TheLocehiliosan/yadm/issues/247
 
+"""
 PKG_MAN_KEY = "PKG_MAN"
 if PKG_MAN_KEY not in os.environ:
     sys.exit(f"Environment variable: {PKG_MAN_KEY} was not defined")
 pkg_man_name = os.environ[PKG_MAN_KEY]
 if pkg_man_name not in pkg_mans:
     sys.exit(f"{PKG_MAN_KEY} must be one of {list(pkg_mans.keys())}")
+"""
 
-pkg_man = pkg_mans[pkg_man_name]
+pkg_man_names = ["pacman", "apt"]
+installed_pkg_man = None
+for pkg_man in pkg_man_names:
+    if shutil.which(pkg_man) != None:
+        if installed_pkg_man != None:
+            raise Exception(f"Multiple package managers detected: {pkg_man}, {installed_pkg_man}")
+        installed_pkg_man = pkg_man
+
+if installed_pkg_man is None:
+    raise Exception(f"Could not find package manager that was {pkg_man_names}")
+
+pkg_man = pkg_mans[installed_pkg_man]
 def aptOrPac(apt_name, pac_name):
     if pkg_man == PackageManager.APT:
         return apt_name
@@ -108,6 +124,9 @@ pkgs = [
         "zsh",
         "qbittorrent",
         "npm",
+        "redshift", # TODO: On ubuntu, do we need redshift gtk?
+        "feh",
+        "compton",
         aptOrPac("golang", "go")
 ]
 
@@ -118,12 +137,16 @@ if pkg_man == PackageManager.PACMAN:
     pkgs = [
         "code" # Visual Studio Code, open-source version
     ]
-    installer.install_pkg("google-chrome", False)
+    yay_pkgs = [
+            "i3-gaps",
+            "google-chrome"
+    ]
+    installer.install_pkgs(yay_pkgs, False)
 elif pkg_man == PackageManager.APT:
     # TODO: Chrome, VsCode
     pass
 
-# TODO: Switch shells to zsh, init zsh, redshift
+# TODO: Switch shells to zsh, init zsh, redshift, font(s), udev rule, cp script /usr/local/bin
 run(f"mkdir {ZSH_DIR}")
 clone_zsh_repo("zsh-users/zsh-autosuggestions")
 clone_zsh_repo("zsh-users/zsh-syntax-highlighting")

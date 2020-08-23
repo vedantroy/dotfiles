@@ -60,6 +60,7 @@ eval "$(fasd --init auto)"
 alias v='fasd -e vim -f'
 
 # Export nvm completion settings for zsh-nvm plugin
+# TODO: Just use straight nvm -- plugin isn't really needed
 export NVM_COMPLETION=true
 
 # Offload nvm initialization to when its needed

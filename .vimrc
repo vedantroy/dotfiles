@@ -42,6 +42,9 @@ Plug 'machakann/vim-highlightedyank'
 " Leads to cleaner commits and helps debug errors in Vim key-bindings
 Plug 'ntpeters/vim-better-whitespace'
 
+" Save current file with sudo: ":w suda://%"
+Plug 'lambdalisue/suda.vim'
+
 " Preview of vim search and replace command
 " Plug 'osyo-manga/vim-over'
 
