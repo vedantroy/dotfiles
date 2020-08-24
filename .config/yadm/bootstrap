@@ -9,16 +9,21 @@ import shutil
 if sys.version_info[0] < 3:
     sys.exit("Must use Python 3")
 if os.geteuid() == 0:
-    sys.exit("This script should not be run as superuser. It will request sudo privileges when necessary.")
+    sys.exit(
+        "This script should not be run as superuser. It will request sudo privileges when necessary."
+    )
+
 
 def run(cmd):
-  print(f'Executing "{cmd}"')
-  cmd = cmd.split()
-  return os.spawnvpe(os.P_WAIT, cmd[0], cmd, os.environ)
+    print(f'Executing "{cmd}"')
+    cmd = cmd.split()
+    return os.spawnvpe(os.P_WAIT, cmd[0], cmd, os.environ)
+
 
 class PackageManager(Enum):
     APT = auto()
     PACMAN = auto()
+
 
 pkg_mans = {"pacman": PackageManager.PACMAN, "apt": PackageManager.APT}
 
@@ -26,7 +31,8 @@ for val in PackageManager:
     if val not in pkg_mans.values():
         raise Exception(f"Internal error: {val} does not have a friendly name")
 
-class Installer():
+
+class Installer:
     def __init__(self, pkg_manager):
         self.installers = []
         self.pkg_man = pkg_manager
@@ -46,7 +52,9 @@ class Installer():
 
     def get_installer(self, primary):
         if primary is False and len(self.installers) < 2:
-            raise Exception(f"Package manager: {self.pkg_man} does not have a secondary installer")
+            raise Exception(
+                f"Package manager: {self.pkg_man} does not have a secondary installer"
+            )
         return self.installers[0 if primary else 1]
 
     def install_pkg(self, pkg, primary=True):
@@ -60,14 +68,18 @@ class Installer():
         pkgs = " ".join(pkgs)
         run(f"{self.get_installer(primary)} {pkgs}")
 
+
 HOME_DIR = os.path.expanduser("~")
 ZSH_DIR = f"{HOME_DIR}/.zsh"
-def clone_zsh_repo(repo_path, host='github.com'):
+
+
+def clone_zsh_repo(repo_path, host="github.com"):
     url = f"https://www.{host}/{repo_path}.git"
     if repo_path.count("/") != 1:
         raise Exception(f'Invalid repo path: "{repo_path}", had too many slashes')
-    dest_folder = repo_path[repo_path.index("/") + 1:]
+    dest_folder = repo_path[repo_path.index("/") + 1 :]
     run(f"git clone --depth=1 {url} {ZSH_DIR}/{dest_folder}")
+
 
 # Use environment variables b/c "yadm bootstrap" swallows
 # CLI args: https://github.com/TheLocehiliosan/yadm/issues/247
@@ -86,13 +98,17 @@ installed_pkg_man = None
 for pkg_man in pkg_man_names:
     if shutil.which(pkg_man) != None:
         if installed_pkg_man != None:
-            raise Exception(f"Multiple package managers detected: {pkg_man}, {installed_pkg_man}")
+            raise Exception(
+                f"Multiple package managers detected: {pkg_man}, {installed_pkg_man}"
+            )
         installed_pkg_man = pkg_man
 
 if installed_pkg_man is None:
     raise Exception(f"Could not find package manager that was {pkg_man_names}")
 
 pkg_man = pkg_mans[installed_pkg_man]
+
+
 def aptOrPac(apt_name, pac_name):
     if pkg_man == PackageManager.APT:
         return apt_name
@@ -100,47 +116,45 @@ def aptOrPac(apt_name, pac_name):
         return pac_name
     raise Exception(f"Unexpected package manager: {pkg_man}")
 
+
 installer = Installer(pkg_man)
 installer.update_pkg_manager()
 
 # git, curl, wget are needed to install packages from source
 # The build tools are also (probably) needed
-pkgs = ["git", "curl",  "wget", aptOrPac("build-essential", "base-devel")]
+pkgs = ["git", "curl", "wget", aptOrPac("build-essential", "base-devel")]
 installer.install_pkgs(pkgs)
 
 # Run nvm installer
-nvm_install_script = request.urlopen("https://raw.githubusercontent.com/nvm-sh/nvm/v0.35.3/install.sh")
-with NamedTemporaryFile(mode='wb') as f:
+nvm_install_script = request.urlopen(
+    "https://raw.githubusercontent.com/nvm-sh/nvm/v0.35.3/install.sh"
+)
+with NamedTemporaryFile(mode="wb") as f:
     f.write(nvm_install_script.read())
     # Ensure output is written
     f.flush()
     run(f"bash {f.name}")
 
 pkgs = [
-        "fzf", # > Ubuntu 19.10
-        "ripgrep", # > Ubuntu 18.10
-        "kitty", # > Ubuntu 19.10
-        "bat", # > Ubuntu 19.10
-        "zsh",
-        "qbittorrent",
-        "npm",
-        "redshift", # TODO: On ubuntu, do we need redshift gtk?
-        "feh",
-        "compton",
-        aptOrPac("golang", "go")
+    "fzf",  # > Ubuntu 19.10
+    "ripgrep",  # > Ubuntu 18.10
+    "kitty",  # > Ubuntu 19.10
+    "bat",  # > Ubuntu 19.10
+    "zsh",
+    "qbittorrent",
+    "npm",
+    "redshift",  # TODO: On ubuntu, do we need redshift gtk?
+    "feh",
+    "compton",
+    aptOrPac("golang", "go"),
 ]
 
 if pkg_man == PackageManager.PACMAN:
     # Package manager for installing community packages
     pkgs.append("yay")
     installer.install_pkgs(pkgs)
-    pkgs = [
-        "code" # Visual Studio Code, open-source version
-    ]
-    yay_pkgs = [
-            "i3-gaps",
-            "google-chrome"
-    ]
+    pkgs = ["code"]  # Visual Studio Code, open-source version
+    yay_pkgs = ["i3-gaps", "google-chrome"]
     installer.install_pkgs(yay_pkgs, False)
 elif pkg_man == PackageManager.APT:
     # TODO: Chrome, VsCode
