@@ -3,7 +3,10 @@
 
 command=~/.config/i3blocks/blocks/$BLOCK_NAME
 
-[volume-pretty]
+[battery]
+interval=1
+
+[volume]
 interval=once
 signal=10
 
