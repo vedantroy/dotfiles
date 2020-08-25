@@ -49,7 +49,7 @@ else:
         SSID_line = network_info.split("\n")[1]
         network_name = SSID_line[len("SSID: ") + 1 :]
         print_i3blocks(
-            f"{enabled_icon}  {strength}% ({network_name})", color=Color.GREEN
+            f"{enabled_icon} {strength}% ({network_name})", color=Color.GREEN
         )
     elif stdout == "down":
         print_i3blocks(f"{disabled_icon} [No Network]", color=Color.RED)
