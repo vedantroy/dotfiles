@@ -186,7 +186,7 @@ def calc_display_time(status: Status, seconds: int) -> str:
         direction = "-"
 
     # format output digitally, e.g. (+0:09)
-    return f" ({direction}{hours}:{minutes:02})"
+    return f"({direction}{hours}:{minutes:02})"
 
 
 def print_status(config: Configuration):
