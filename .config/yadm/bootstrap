@@ -146,6 +146,8 @@ pkgs = [
     "redshift",  # TODO: On ubuntu, do we need redshift gtk?
     "feh",
     "compton",
+    "yad",
+    "xdotool",
     aptOrPac("golang", "go"),
 ]
 
@@ -161,6 +163,7 @@ elif pkg_man == PackageManager.APT:
     pass
 
 # TODO: Switch shells to zsh, init zsh, redshift, font(s), udev rule, cp script /usr/local/bin
+# fonts = awesome (check if needed), nerd fonts (hack version onyl)
 run(f"mkdir {ZSH_DIR}")
 clone_zsh_repo("zsh-users/zsh-autosuggestions")
 clone_zsh_repo("zsh-users/zsh-syntax-highlighting")
