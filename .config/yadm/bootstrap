@@ -143,9 +143,15 @@ pkgs = [
     "zsh",
     "qbittorrent",
     "npm",
-    "redshift",  # TODO: On ubuntu, do we need redshift gtk?
+    # TODO: On ubuntu, do we need redshift gtk?
+    "redshift",
+    # Needed by redshift to detect location
+    # TODO: Might need to add redshift to geoclue2 conf
+    # TODO: follow this? https://wiki.archlinux.org/index.php/Redshift
+    aptOrPac("geoclue-2.0", "geoclue2")
     "feh",
     "compton",
+    # Used by i3blocks calendar popup
     "yad",
     "xdotool",
     aptOrPac("golang", "go"),

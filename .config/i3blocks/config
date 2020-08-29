@@ -3,12 +3,23 @@
 
 command=~/.config/i3blocks/blocks/$BLOCK_NAME
 
-[battery]
-interval=15
+[time]
+interval=60
+
+[calendar]
+interval=3600
+# trailing space is on purpose
+LABEL= 
+# SHORTFMT=+%H:%M:%S
+HEIGHT=180
+WIDTH=220
 
 [volume]
 interval=once
 signal=10
+
+[battery]
+interval=15
 
 [wifi]
 interval=15
