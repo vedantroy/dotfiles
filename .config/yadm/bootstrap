@@ -154,6 +154,9 @@ pkgs = [
     # Used by i3blocks calendar popup
     "yad",
     "xdotool",
+    # Used by Neovim for copy/paste
+    # See :help clipboard in Neovim
+    "xclip",
     aptOrPac("golang", "go"),
 ]
 
