@@ -250,3 +250,6 @@ bindsym $mod+less focus output left
 
 bindsym $mod+Shift+greater move workspace to output right
 bindsym $mod+Shift+less move workspace to output left
+
+bindsym $mod+n move container to output left
+bindsym $mod+m move container to output right
