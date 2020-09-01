@@ -76,5 +76,10 @@ source ~/.zsh/zsh-nvm/zsh-nvm.plugin.zsh
 
 # export TERM=xterm-256color
 
+# https://github.com/junegunn/fzf/issues/383
+# ripgrep respects .gitignore (unless you use --no-ignore-vcs)
+export FZF_DEFAULT_COMMAND='rg --files --hidden --follow --color never'
+export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
+
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
