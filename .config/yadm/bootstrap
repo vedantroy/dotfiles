@@ -157,6 +157,9 @@ pkgs = [
     # Used by Neovim for copy/paste
     # See :help clipboard in Neovim
     "xclip",
+    # Disk Usage Analyzer
+    # alternative is: "baobab",
+    "ncdu",
     aptOrPac("golang", "go"),
 ]
 
