@@ -121,19 +121,21 @@ installer = Installer(pkg_man)
 installer.update_pkg_manager()
 
 # git, curl, wget are needed to install packages from source
+# We also need curl & git for asdf
 # The build tools are also (probably) needed
 pkgs = ["git", "curl", "wget", aptOrPac("build-essential", "base-devel")]
 installer.install_pkgs(pkgs)
 
+# nvm is too slow, prefer asdf
 # Run nvm installer
-nvm_install_script = request.urlopen(
-    "https://raw.githubusercontent.com/nvm-sh/nvm/v0.35.3/install.sh"
-)
-with NamedTemporaryFile(mode="wb") as f:
-    f.write(nvm_install_script.read())
-    # Ensure output is written
-    f.flush()
-    run(f"bash {f.name}")
+# nvm_install_script = request.urlopen(
+#     "https://raw.githubusercontent.com/nvm-sh/nvm/v0.35.3/install.sh"
+# )
+# with NamedTemporaryFile(mode="wb") as f:
+#     f.write(nvm_install_script.read())
+#     # Ensure output is written
+#     f.flush()
+#     run(f"bash {f.name}")
 
 pkgs = [
     "fzf",  # > Ubuntu 19.10
@@ -148,7 +150,7 @@ pkgs = [
     # Needed by redshift to detect location
     # TODO: Might need to add redshift to geoclue2 conf
     # TODO: follow this? https://wiki.archlinux.org/index.php/Redshift
-    aptOrPac("geoclue-2.0", "geoclue2")
+    aptOrPac("geoclue-2.0", "geoclue2"),
     "feh",
     "compton",
     # Used by i3blocks calendar popup
@@ -161,6 +163,8 @@ pkgs = [
     # alternative is: "baobab",
     "ncdu",
     aptOrPac("golang", "go"),
+    # used by asdf nodejs plugin & probably many other things
+    aptOrPac("gpg", "gnupg"),
 ]
 
 if pkg_man == PackageManager.PACMAN:
@@ -180,4 +184,18 @@ run(f"mkdir {ZSH_DIR}")
 clone_zsh_repo("zsh-users/zsh-autosuggestions")
 clone_zsh_repo("zsh-users/zsh-syntax-highlighting")
 clone_zsh_repo("romkatv/powerlevel10k")
-clone_zsh_repo("lukechilds/zsh-nvm")
+# nvm is too slow, prefer asdf
+# clone_zsh_repo("lukechilds/zsh-nvm")
+
+# install asdf -- NOT TESTED
+run(f"git clone https://github.com/asdf-vm/asdf.git {HOME_DIR}/.asdf")
+run(f"cd {HOME_DIR}/.asdf")
+run('git checkout "$(git describe --abbrev=0 --tags)"')
+run('". $HOME/.asdf/asdf.sh" >> {HOME_DIR}/.zshrc')
+run('". $HOME/.asdf/completions/asdf.bash" >> {HOME_DIR}/.zshrc')
+
+# needed for asdf nodejs plugin -- NOT TESTED
+# https://github.com/asdf-vm/asdf-nodejs
+run(
+    "bash -c '${ASDF_DATA_DIR:=$HOME/.asdf}/plugins/nodejs/bin/import-release-team-keyring'"
+)
