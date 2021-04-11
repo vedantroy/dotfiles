@@ -81,5 +81,35 @@ source ~/.zsh/zsh-nvm/zsh-nvm.plugin.zsh
 export FZF_DEFAULT_COMMAND='rg --files --hidden --follow --color never'
 export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
 
+# set go
+export GOROOT=$HOME/Desktop/go/
+export GOPATH=$HOME/Desktop/go/bin
+
+export PATH="$HOME/go/bin:/home/vedantroy/.local/bin:$PATH"
+
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
+
+# >>> conda initialize >>>
+# !! Contents within this block are managed by 'conda init' !!
+__conda_setup="$('/home/vedantroy/anaconda3/bin/conda' 'shell.zsh' 'hook' 2> /dev/null)"
+if [ $? -eq 0 ]; then
+    eval "$__conda_setup"
+else
+    if [ -f "/home/vedantroy/anaconda3/etc/profile.d/conda.sh" ]; then
+        . "/home/vedantroy/anaconda3/etc/profile.d/conda.sh"
+    else
+        export PATH="/home/vedantroy/anaconda3/bin:$PATH"
+    fi
+fi
+unset __conda_setup
+# <<< conda initialize <<<
+
+
+# add Pulumi to the PATH
+export PATH=$PATH:$HOME/.pulumi/bin
+
+export PATH="$HOME/.poetry/bin:$PATH"
+
+export DENO_INSTALL="/home/vedantroy/.deno"
+export PATH="$DENO_INSTALL/bin:$PATH"
