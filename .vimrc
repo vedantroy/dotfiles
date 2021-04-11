@@ -112,6 +112,9 @@ Plug 'gabrielelana/vim-markdown'
 " Better vim Git integration
 Plug 'tpope/vim-fugitive'
 
+" Change quote pairs easily
+Plug 'tpope/vim-surround'
+
 call plug#end()
 
 " https://vi.stackexchange.com/questions/10124/what-is-the-difference-between-filetype-plugin-indent-on-and-filetype-indent
@@ -293,7 +296,6 @@ let g:fzf_action = {
 " https://github.com/junegunn/fzf.vim/issues/185
 let $FZF_DEFAULT_OPTS = '--bind ctrl-a:select-all'
 
-
 " TODO: Figure out a good terminal emulator that supports bold for cterm
 " TODO: Write a better foldtext function
 highlight Folded cterm=italic ctermfg=white ctermbg=None
@@ -355,3 +357,15 @@ augroup Markdown
   autocmd FileType markdown set wrap
   autocmd FileType markdown set linebreak
 augroup END
+
+" https://github.com/neoclide/coc.nvim/issues/869
+" Use K to show documentation in preview window
+nnoremap <silent> K :call <SID>show_documentation()<CR>
+
+function! s:show_documentation()
+  if (index(['vim','help'], &filetype) >= 0)
+    execute 'h '.expand('<cword>')
+  else
+    call CocAction('doHover')
+  endif
+endfunction
